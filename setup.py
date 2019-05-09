@@ -38,7 +38,9 @@ setup(
     name='zingstats',  # Required
     use_scm_version=True,
     setup_requires=['setuptools_scm', 'pytest-runner'],
-    tests_require=['pytest', 'pytest-cov', 'requests-mock', 'pytest-flake8'],
+    tests_require=[
+        'pytest', 'pytest-cov', 'requests-mock', 'pytest-flake8', 'codecov'
+    ],
     description='A package for querying change data from Gerrit and Github.',
     long_description=long_description,  # Optional
     url='https://github.com/HewlettPackard/zing-stats',  # Optional
