@@ -60,9 +60,16 @@ jobs:
           path: test-reports
 
       - run:
-          name: upload coverage
+          name: upload codecov.io coverage
           command: |
            ls venv/bin
            . venv/bin/activate
            pip install codecov
            codecov --token $CODECOV_TOKEN
+      - run:
+          name: Run sonar-scanner
+          command: |
+             wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
+             unzip sonar-scanner-cli-3.3.0.1492-linux.zip
+             export PATH=$PATH:$(pwd)/sonar-scanner-3.3.0.1492-linux/bin
+             sonar-scanner -X
