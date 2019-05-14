@@ -58,11 +58,44 @@ jobs:
 
       - store_test_results:
           path: test-reports
-
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage.xml
       - run:
-          name: upload coverage
+          name: upload codecov.io coverage
           command: |
            ls venv/bin
            . venv/bin/activate
            pip install codecov
+           find . -type f -ls
            codecov --token $CODECOV_TOKEN
+  sonar:
+    docker:
+      - image: newtmitch/sonar-scanner:latest
+    working_directory: /usr/src
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - restore_cache:
+          keys:
+            - sonar
+      - run:
+          name: Run sonar-scanner
+          command: |
+            sed -i -e 's|/home/circleci/repo/zingstats|/usr/src/zingstats|' /tmp/workspace/coverage.xml
+            sonar-scanner -X -Dsonar.login=$SONARCLOUD_TOKEN -Dsonar.python.coverage.reportPath=/tmp/workspace/coverage.xml
+      - save_cache:
+          paths:
+            - /root/.sonar
+          key: sonar
+
+workflows:
+  version: 2
+  ci_workflow:
+    jobs:
+      - build
+      - sonar:
+          requires:
+            - build
