@@ -73,7 +73,7 @@ jobs:
   sonar:
     docker:
       - image: newtmitch/sonar-scanner:latest
-    working_directory: /usr/src
+    working_directory: /home/circleci/repo
     steps:
       - checkout
       - attach_workspace:
@@ -84,8 +84,7 @@ jobs:
       - run:
           name: Run sonar-scanner
           command: |
-            sed -i -e 's|/home/circleci/repo/zingstats|/usr/src/zingstats|' /tmp/workspace/coverage.xml
-            sonar-scanner -X -Dsonar.login=$SONARCLOUD_TOKEN -Dsonar.python.coverage.reportPath=/tmp/workspace/coverage.xml
+            sonar-scanner -X -Dsonar.login=$SONARCLOUD_TOKEN -Dsonar.python.coverage.reportPath=/tmp/workspace/coverage.xml -Dsonar.projectBaseDir=/home/circleci/repo
       - save_cache:
           paths:
             - /root/.sonar
